@@ -34,8 +34,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/login").permitAll() //Permit everybody for /login
                 .anyRequest().authenticated()
-        .and().sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS); //Hey Spring Security, Don't Manage/create Sessions
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); //Hey Spring Security, Don't Manage/create Sessions
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); //this filter is called before UsernamePass filter is called
 
