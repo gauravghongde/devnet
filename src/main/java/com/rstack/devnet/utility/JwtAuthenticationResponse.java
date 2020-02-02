@@ -1,10 +1,10 @@
 package com.rstack.devnet.utility;
 
-public class AuthenticationResponse {
+public class JwtAuthenticationResponse {
 
     private String jwt;
 
-    public AuthenticationResponse(String jwt) {
+    public JwtAuthenticationResponse(String jwt) {
         this.jwt = jwt;
     }
 
