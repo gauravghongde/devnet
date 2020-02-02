@@ -8,7 +8,9 @@ import com.rstack.devnet.utility.LoginResponse;
 import com.rstack.devnet.utility.RegisterRequest;
 import com.rstack.devnet.utility.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AuthServiceImpl implements IAuthService {
 
     @Autowired
