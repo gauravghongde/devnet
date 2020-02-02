@@ -55,7 +55,7 @@ public class DevnetController {
     //accepts -> unique QID and QHeader
     //returns -> question matching the string
     @GetMapping(value = "/questions/{questionId}/{questionHeader}")
-    public ResponseEntity<?> viewQuestion(@PathVariable String questionId, @PathVariable String pathHeader){
+    public ResponseEntity<?> viewQuestion(@PathVariable String questionId, @PathVariable String pathHeader) {
         //return json response containing
         //question header+body + comments
         //all answers + comments
@@ -67,7 +67,7 @@ public class DevnetController {
     //accepts -> string of search query
     //returns -> questions matching the string
     @GetMapping(value = "/questions/{searchQuery}")
-    public ResponseEntity<?> searchQuestions(@PathVariable String searchQuery){
+    public ResponseEntity<?> searchQuestions(@PathVariable String searchQuery) {
         return null;
     }
 
