@@ -6,6 +6,7 @@ import com.rstack.devnet.utility.PostQuestionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,8 +31,9 @@ public class DevnetController {
 
     /////// POST QUESTION /////////
     @PostMapping(value = "/questions/post")
-    public ResponseEntity<String> postQuestion(@RequestBody PostQuestionRequest postQuestionRequest) throws Exception {
-        jwtTokenProvider.extractUsername("");
+    public ResponseEntity<String> postQuestion(@RequestBody PostQuestionRequest postQuestionRequest, Authentication authentication) throws Exception {
+        String username = authentication.getName();
+
 //        ADD
 //        username UUID
 //        postQuestionRequest.getQuestionHeader();

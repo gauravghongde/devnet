@@ -18,4 +18,91 @@ public class QUESTION {
     private int downVotes;
     private List<ANSWER> answerObj;
     private List<COMMENT> commentObj;
+
+    public QUESTION() {
+    }
+
+    public QUESTION(String questionId, String questionHeader, String questionBody, String byUser, LocalDate postedAt, int upVotes, int downVotes, List<ANSWER> answerObj, List<COMMENT> commentObj) {
+        this.questionId = questionId;
+        this.questionHeader = questionHeader;
+        this.questionBody = questionBody;
+        this.byUser = byUser;
+        this.postedAt = postedAt;
+        this.upVotes = upVotes;
+        this.downVotes = downVotes;
+        this.answerObj = answerObj;
+        this.commentObj = commentObj;
+    }
+
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
+    }
+
+    public String getQuestionHeader() {
+        return questionHeader;
+    }
+
+    public void setQuestionHeader(String questionHeader) {
+        this.questionHeader = questionHeader;
+    }
+
+    public String getQuestionBody() {
+        return questionBody;
+    }
+
+    public void setQuestionBody(String questionBody) {
+        this.questionBody = questionBody;
+    }
+
+    public String getByUser() {
+        return byUser;
+    }
+
+    public void setByUser(String byUser) {
+        this.byUser = byUser;
+    }
+
+    public LocalDate getPostedAt() {
+        return postedAt;
+    }
+
+    public void setPostedAt(LocalDate postedAt) {
+        this.postedAt = postedAt;
+    }
+
+    public int getUpVotes() {
+        return upVotes;
+    }
+
+    public void setUpVotes(int upVotes) {
+        this.upVotes = upVotes;
+    }
+
+    public int getDownVotes() {
+        return downVotes;
+    }
+
+    public void setDownVotes(int downVotes) {
+        this.downVotes = downVotes;
+    }
+
+    public List<ANSWER> getAnswerObj() {
+        return answerObj;
+    }
+
+    public void setAnswerObj(List<ANSWER> answerObj) {
+        this.answerObj = answerObj;
+    }
+
+    public List<COMMENT> getCommentObj() {
+        return commentObj;
+    }
+
+    public void setCommentObj(List<COMMENT> commentObj) {
+        this.commentObj = commentObj;
+    }
 }
