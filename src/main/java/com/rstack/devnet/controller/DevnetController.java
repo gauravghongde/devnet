@@ -1,8 +1,11 @@
 package com.rstack.devnet.controller;
 
 import com.rstack.devnet.security.JwtTokenProvider;
+import com.rstack.devnet.service.IPostService;
 import com.rstack.devnet.service.MyUserDetailsService;
 import com.rstack.devnet.utility.PostQuestionRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 public class DevnetController {
 
+    private final Logger log = LoggerFactory.getLogger(DevnetController.class);
+
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -21,6 +27,9 @@ public class DevnetController {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private IPostService postService;
 
     ////////// USER /////
     @GetMapping(value = "/home/ping")
@@ -33,7 +42,7 @@ public class DevnetController {
     @PostMapping(value = "/questions/post")
     public ResponseEntity<String> postQuestion(@RequestBody PostQuestionRequest postQuestionRequest, Authentication authentication) throws Exception {
         String username = authentication.getName();
-
+        postService.postAQuestion(postQuestionRequest,username);
 //        ADD
 //        username UUID
 //        postQuestionRequest.getQuestionHeader();
