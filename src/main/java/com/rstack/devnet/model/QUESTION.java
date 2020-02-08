@@ -3,7 +3,7 @@ package com.rstack.devnet.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 @Document(collection = "QUESTION")
@@ -13,7 +13,7 @@ public class QUESTION {
     private String questionHeader;
     private String questionBody;
     private String byUser; //username
-    private LocalDate postedAt;
+    private Instant postedAt;
     private int upVotes;
     private int downVotes;
     private List<ANSWER> answerObj;
@@ -22,7 +22,7 @@ public class QUESTION {
     public QUESTION() {
     }
 
-    public QUESTION(String questionId, String questionHeader, String questionBody, String byUser, LocalDate postedAt, int upVotes, int downVotes, List<ANSWER> answerObj, List<COMMENT> commentObj) {
+    public QUESTION(String questionId, String questionHeader, String questionBody, String byUser, Instant postedAt, int upVotes, int downVotes, List<ANSWER> answerObj, List<COMMENT> commentObj) {
         this.questionId = questionId;
         this.questionHeader = questionHeader;
         this.questionBody = questionBody;
@@ -66,11 +66,11 @@ public class QUESTION {
         this.byUser = byUser;
     }
 
-    public LocalDate getPostedAt() {
+    public Instant getPostedAt() {
         return postedAt;
     }
 
-    public void setPostedAt(LocalDate postedAt) {
+    public void setPostedAt(Instant postedAt) {
         this.postedAt = postedAt;
     }
 

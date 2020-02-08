@@ -1,6 +1,6 @@
 package com.rstack.devnet.model;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 public class ANSWER {
@@ -8,7 +8,7 @@ public class ANSWER {
     private String forQuestion; //QID
     private String answerBody;
     private String byUser; //username
-    private LocalDate postedAt;
+    private Instant postedAt;
     private int upVotes;
     private int downVotes;
     private List<COMMENT> commentObj;
@@ -16,7 +16,7 @@ public class ANSWER {
     public ANSWER() {
     }
 
-    public ANSWER(String answerId, String forQuestion, String answerBody, String byUser, LocalDate postedAt, int upVotes, int downVotes, List<COMMENT> commentObj) {
+    public ANSWER(String answerId, String forQuestion, String answerBody, String byUser, Instant postedAt, int upVotes, int downVotes, List<COMMENT> commentObj) {
         this.answerId = answerId;
         this.forQuestion = forQuestion;
         this.answerBody = answerBody;
@@ -59,11 +59,11 @@ public class ANSWER {
         this.byUser = byUser;
     }
 
-    public LocalDate getPostedAt() {
+    public Instant getPostedAt() {
         return postedAt;
     }
 
-    public void setPostedAt(LocalDate postedAt) {
+    public void setPostedAt(Instant postedAt) {
         this.postedAt = postedAt;
     }
 

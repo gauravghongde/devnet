@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
@@ -63,7 +64,7 @@ public class SwaggerConfig {
                 .useDefaultResponseMessages(false);
 
         docket = docket.select()
-                .paths(regex(DEFAULT_INCLUDE_PATTERN))
+                .paths(PathSelectors.any())
                 .build();
         return docket;
     }
@@ -76,7 +77,7 @@ public class SwaggerConfig {
     private SecurityContext securityContext() {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
-                .forPaths(regex(DEFAULT_INCLUDE_PATTERN))
+                .forPaths(PathSelectors.any())
                 .build();
     }
 

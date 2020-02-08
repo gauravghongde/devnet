@@ -1,8 +1,10 @@
 package com.rstack.devnet.controller;
 
+import com.rstack.devnet.model.QUESTION;
 import com.rstack.devnet.security.JwtTokenProvider;
 import com.rstack.devnet.service.IPostService;
 import com.rstack.devnet.service.MyUserDetailsService;
+import com.rstack.devnet.utility.PostAnswerRequest;
 import com.rstack.devnet.utility.PostQuestionRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,36 +44,30 @@ public class DevnetController {
     @PostMapping(value = "/questions/post")
     public ResponseEntity<String> postQuestion(@RequestBody PostQuestionRequest postQuestionRequest, Authentication authentication) throws Exception {
         String username = authentication.getName();
-        postService.postAQuestion(postQuestionRequest,username);
-//        ADD
-//        username UUID
-//        postQuestionRequest.getQuestionHeader();
-//        postQuestionRequest.getQuestionBody();
-//        to database
+        postService.postAQuestion(postQuestionRequest, username);
         return ResponseEntity.ok().body("ADDED");
     }
 
     /////// POST ANSWER /////////
     @PostMapping(value = "questions/{questionId}/post/answer")
-    public ResponseEntity<?> postAnswer() throws Exception {
+    public ResponseEntity<?> postAnswer(@PathVariable String questionId, @RequestBody PostAnswerRequest postAnswerRequest, Authentication authentication) throws Exception {
+        String username = authentication.getName();
+        postService.postAnAnswer(postAnswerRequest, username, questionId);
+        return ResponseEntity.ok().body("ADDED");
 //        ADD
 //        username
 //        qid
 //        Answer body
 //        to database
-        return ResponseEntity.ok("ADDED");
     }
 
     /////////// VIEW A QUESTION ///////////////
     //accepts -> unique QID and QHeader
     //returns -> question matching the string
-    @GetMapping(value = "/questions/{questionId}/{questionHeader}")
-    public ResponseEntity<?> viewQuestion(@PathVariable String questionId, @PathVariable String pathHeader) {
-        //return json response containing
-        //question header+body + comments
-        //all answers + comments
-        //votes
-        return null;
+    @GetMapping(value = "/questions/{questionId}/{questionHeader}", produces = "application/json")
+    public ResponseEntity<QUESTION> viewQuestion(@PathVariable String questionId, @PathVariable String questionHeader) {
+        QUESTION questionDTO = postService.getAQuestion(questionId);
+        return ResponseEntity.ok(questionDTO);
     }
 
     /////////// SEARCH QUESTIONS ///////////////
