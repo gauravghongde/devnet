@@ -1,16 +1,24 @@
 package com.rstack.devnet.controller;
 
+import com.rstack.devnet.model.QUESTION;
 import com.rstack.devnet.security.JwtTokenProvider;
+import com.rstack.devnet.service.IPostService;
 import com.rstack.devnet.service.MyUserDetailsService;
-import com.rstack.devnet.utility.PostQuestionRequest;
+import com.rstack.devnet.utility.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin("*")
 public class DevnetController {
+
+    private final Logger log = LoggerFactory.getLogger(DevnetController.class);
+
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -21,6 +29,9 @@ public class DevnetController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    private IPostService postService;
+
     ////////// USER /////
     @GetMapping(value = "/home/ping")
     public ResponseEntity<String> pingHome() {
@@ -28,39 +39,60 @@ public class DevnetController {
     }
 
 
+    /*
+     GET ALL QUESTIONS      /questions
+     POST A QUESTION        /questions/post
+     GET A QUESTION         /questions/<QID>
+     GET ALL ANSWERS        /questions/<QID>/answers
+     ^-------------^        Should get the response JSON, but URL should show 404
+     POST AN ANSWER         /questions/<QID>/answers/post
+     GET AN ANSWER          /questions/<QID>/answers/<AID>
+     GET ALL COMMENTS       /questions/<QID>/answers/<AID>/comments
+     POST A COMMENT         /questions/<QID>/answers/<AID>/comments/post
+     GET A COMMENT          /questions/<QID>/answers/<AID>/comments/<CID>
+
+     POST A COMMENT <OR>    /posts/<PID>/comments/add
+     UPVOTE                 /posts/<PID>/1
+     DOWNVOTE               /posts/<PID>/0
+     FAVOURITE              /posts/<PID>?favourite=true
+    */
+
+
     /////// POST QUESTION /////////
     @PostMapping(value = "/questions/post")
-    public ResponseEntity<String> postQuestion(@RequestBody PostQuestionRequest postQuestionRequest) throws Exception {
-        jwtTokenProvider.extractUsername("");
-//        ADD
-//        username
-//        postQuestionRequest.getQuestionHeader();
-//        postQuestionRequest.getQuestionBody();
-//        to database
+    public ResponseEntity<String> postQuestion(@RequestBody PostQuestionRequest postQuestionRequest, Authentication authentication) throws Exception {
+        String username = authentication.getName();
+        postService.postAQuestion(postQuestionRequest, username);
         return ResponseEntity.ok().body("ADDED");
     }
 
     /////// POST ANSWER /////////
-    @PostMapping(value = "questions/{questionId}/post/answer")
-    public ResponseEntity<?> postAnswer() throws Exception {
-//        ADD
-//        username
-//        qid
-//        Answer body
-//        to database
-        return ResponseEntity.ok("ADDED");
+    @PostMapping(value = "questions/{questionId}/answers/post")
+    public ResponseEntity<String> postAnswer(@PathVariable String questionId,
+                                             @RequestBody PostAnswerRequest postAnswerRequest,
+                                             Authentication authentication) throws Exception {
+        String username = authentication.getName();
+        PostAnswerResponse postAnswerResponse = postService.postAnAnswer(postAnswerRequest, username, questionId);
+        return ResponseEntity.ok().body(postAnswerResponse.getPostAnswerMessage());
+    }
+
+    /////////// ADD A COMMENT ///////////////
+    @PostMapping(value = "posts/{questionId}/add")
+    public ResponseEntity<?> postComment(@PathVariable String questionId,
+                                         @RequestParam(value = "answerId", defaultValue = "") String answerId, //required is set to false if defaultValue is used
+                                         @RequestBody PostCommentRequest postCommentRequest,
+                                         Authentication authentication) {
+        String username = authentication.getName();
+        PostCommentResponse postCommentResponse = postService.postAComment(postCommentRequest, username, questionId, answerId);
+        return ResponseEntity.ok().body(postCommentResponse.getMessage());
     }
 
     /////////// VIEW A QUESTION ///////////////
-    //accepts -> unique QID and QHeader
-    //returns -> question matching the string
-    @GetMapping(value = "/questions/{questionId}/{questionHeader}")
-    public ResponseEntity<?> viewQuestion(@PathVariable String questionId, @PathVariable String pathHeader) {
-        //return json response containing
-        //question header+body + comments
-        //all answers + comments
-        //votes
-        return null;
+    @GetMapping(value = "/questions/{questionId}/{questionHeader}", produces = "application/json")
+    public ResponseEntity<QUESTION> viewQuestion(@PathVariable String questionId,
+                                                 @PathVariable String questionHeader) {
+        QUESTION questionDTO = postService.getAQuestion(questionId);
+        return ResponseEntity.ok(questionDTO);
     }
 
     /////////// SEARCH QUESTIONS ///////////////

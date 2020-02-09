@@ -1,44 +1,41 @@
 package com.rstack.devnet.model;
 
 import java.time.Instant;
-import java.util.List;
 
-public class ANSWER {
-    private String answerId;
-    private String answerBody;
+public class COMMENT {
+    private String commentId;
+    private String commentBody;
     private String byUser; //username
     private Instant postedAt;
     private int upVotes;
     private int downVotes;
-    private List<COMMENT> commentObj;
 
-    public ANSWER() {
+    public COMMENT() {
     }
 
-    public ANSWER(String answerId, String answerBody, String byUser, Instant postedAt, int upVotes, int downVotes, List<COMMENT> commentObj) {
-        this.answerId = answerId;
-        this.answerBody = answerBody;
+    public COMMENT(String commentId, String commentBody, String byUser, Instant postedAt, int upVotes, int downVotes) {
+        this.commentId = commentId;
+        this.commentBody = commentBody;
         this.byUser = byUser;
         this.postedAt = postedAt;
         this.upVotes = upVotes;
         this.downVotes = downVotes;
-        this.commentObj = commentObj;
     }
 
-    public String getAnswerId() {
-        return answerId;
+    public String getCommentId() {
+        return commentId;
     }
 
-    public void setAnswerId(String answerId) {
-        this.answerId = answerId;
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
     }
 
-    public String getAnswerBody() {
-        return answerBody;
+    public String getCommentBody() {
+        return commentBody;
     }
 
-    public void setAnswerBody(String answerBody) {
-        this.answerBody = answerBody;
+    public void setCommentBody(String commentBody) {
+        this.commentBody = commentBody;
     }
 
     public String getByUser() {
@@ -71,13 +68,5 @@ public class ANSWER {
 
     public void setDownVotes(int downVotes) {
         this.downVotes = downVotes;
-    }
-
-    public List<COMMENT> getCommentObj() {
-        return commentObj;
-    }
-
-    public void setCommentObj(List<COMMENT> commentObj) {
-        this.commentObj = commentObj;
     }
 }
