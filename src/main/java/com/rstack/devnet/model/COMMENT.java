@@ -1,22 +1,20 @@
 package com.rstack.devnet.model;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 public class COMMENT {
     private String commentId;
-    private String forContent; //AID/QID
     private String commentBody;
     private String byUser; //username
-    private LocalDate postedAt;
+    private Instant postedAt;
     private int upVotes;
     private int downVotes;
 
     public COMMENT() {
     }
 
-    public COMMENT(String commentId, String forContent, String commentBody, String byUser, LocalDate postedAt, int upVotes, int downVotes) {
+    public COMMENT(String commentId, String commentBody, String byUser, Instant postedAt, int upVotes, int downVotes) {
         this.commentId = commentId;
-        this.forContent = forContent;
         this.commentBody = commentBody;
         this.byUser = byUser;
         this.postedAt = postedAt;
@@ -30,14 +28,6 @@ public class COMMENT {
 
     public void setCommentId(String commentId) {
         this.commentId = commentId;
-    }
-
-    public String getForContent() {
-        return forContent;
-    }
-
-    public void setForContent(String forContent) {
-        this.forContent = forContent;
     }
 
     public String getCommentBody() {
@@ -56,11 +46,11 @@ public class COMMENT {
         this.byUser = byUser;
     }
 
-    public LocalDate getPostedAt() {
+    public Instant getPostedAt() {
         return postedAt;
     }
 
-    public void setPostedAt(LocalDate postedAt) {
+    public void setPostedAt(Instant postedAt) {
         this.postedAt = postedAt;
     }
 

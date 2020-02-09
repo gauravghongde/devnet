@@ -10,5 +10,5 @@ public interface IPostService {
 
     PostAnswerResponse postAnAnswer(PostAnswerRequest postAnswerRequest, String username, String questionId);
 
-    PostCommentResponse postAComment(PostCommentRequest postCommentRequest);
+    PostCommentResponse postAComment(PostCommentRequest postCommentRequest, String username, String questionId, String answerId);
 }

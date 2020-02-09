@@ -5,7 +5,6 @@ import java.util.List;
 
 public class ANSWER {
     private String answerId;
-    private String forQuestion; //QID
     private String answerBody;
     private String byUser; //username
     private Instant postedAt;
@@ -16,9 +15,8 @@ public class ANSWER {
     public ANSWER() {
     }
 
-    public ANSWER(String answerId, String forQuestion, String answerBody, String byUser, Instant postedAt, int upVotes, int downVotes, List<COMMENT> commentObj) {
+    public ANSWER(String answerId, String answerBody, String byUser, Instant postedAt, int upVotes, int downVotes, List<COMMENT> commentObj) {
         this.answerId = answerId;
-        this.forQuestion = forQuestion;
         this.answerBody = answerBody;
         this.byUser = byUser;
         this.postedAt = postedAt;
@@ -33,14 +31,6 @@ public class ANSWER {
 
     public void setAnswerId(String answerId) {
         this.answerId = answerId;
-    }
-
-    public String getForQuestion() {
-        return forQuestion;
-    }
-
-    public void setForQuestion(String forQuestion) {
-        this.forQuestion = forQuestion;
     }
 
     public String getAnswerBody() {
