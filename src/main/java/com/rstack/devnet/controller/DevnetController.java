@@ -1,6 +1,5 @@
 package com.rstack.devnet.controller;
 
-import com.rstack.devnet.model.ANSWER;
 import com.rstack.devnet.model.QUESTION;
 import com.rstack.devnet.security.JwtTokenProvider;
 import com.rstack.devnet.service.IPostService;
@@ -15,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -100,7 +98,6 @@ public class DevnetController {
     @GetMapping(value = "/questions/{questionId}/{questionHeader}", produces = "application/json")
     public ResponseEntity<QueWithAnsResponse> viewQuestion(@PathVariable String questionId,
                                                            @PathVariable String questionHeader) {
-        HashMap<QUESTION, List<ANSWER>> questionObj = new HashMap<>();
         //check if this is a good practice to combine two queries
         //OR to use JOIN $lookup
         QueWithAnsResponse queWithAnsResponse = new QueWithAnsResponse();
@@ -121,11 +118,6 @@ public class DevnetController {
 
     @PostMapping(value = "/vote")
     public ResponseEntity<?> vote(@RequestBody PostQuestionRequest postQuestionRequest) throws Exception {
-//        ADD
-//        username
-//        postQuestionRequest.getQuestionHeader();
-//        postQuestionRequest.getQuestionBody();
-//        to database
         return ResponseEntity.ok("ADDED");
     }
 
