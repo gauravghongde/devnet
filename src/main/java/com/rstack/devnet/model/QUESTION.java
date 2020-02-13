@@ -1,6 +1,7 @@
 package com.rstack.devnet.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -10,19 +11,20 @@ import java.util.List;
 public class QUESTION {
     @Id
     private String questionId;
+    @TextIndexed(weight = 2)
     private String questionHeader;
+    @TextIndexed
     private String questionBody;
     private String byUser; //username
     private Instant postedAt;
     private int upVotes;
     private int downVotes;
-    private List<ANSWER> answerObj;
     private List<COMMENT> commentObj;
 
     public QUESTION() {
     }
 
-    public QUESTION(String questionId, String questionHeader, String questionBody, String byUser, Instant postedAt, int upVotes, int downVotes, List<ANSWER> answerObj, List<COMMENT> commentObj) {
+    public QUESTION(String questionId, String questionHeader, String questionBody, String byUser, Instant postedAt, int upVotes, int downVotes, List<COMMENT> commentObj) {
         this.questionId = questionId;
         this.questionHeader = questionHeader;
         this.questionBody = questionBody;
@@ -30,7 +32,6 @@ public class QUESTION {
         this.postedAt = postedAt;
         this.upVotes = upVotes;
         this.downVotes = downVotes;
-        this.answerObj = answerObj;
         this.commentObj = commentObj;
     }
 
@@ -88,14 +89,6 @@ public class QUESTION {
 
     public void setDownVotes(int downVotes) {
         this.downVotes = downVotes;
-    }
-
-    public List<ANSWER> getAnswerObj() {
-        return answerObj;
-    }
-
-    public void setAnswerObj(List<ANSWER> answerObj) {
-        this.answerObj = answerObj;
     }
 
     public List<COMMENT> getCommentObj() {
