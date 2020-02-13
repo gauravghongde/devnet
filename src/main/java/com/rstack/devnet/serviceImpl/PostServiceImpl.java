@@ -1,6 +1,8 @@
 package com.rstack.devnet.serviceImpl;
 
+import com.rstack.devnet.model.ANSWER;
 import com.rstack.devnet.model.QUESTION;
+import com.rstack.devnet.repository.AnswerRepository;
 import com.rstack.devnet.repository.QuestionRepository;
 import com.rstack.devnet.service.IPostService;
 import com.rstack.devnet.utility.*;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 public class PostServiceImpl implements IPostService {
@@ -21,6 +24,9 @@ public class PostServiceImpl implements IPostService {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private AnswerRepository answerRepository;
+
     @Override
     public PostQuestionResponse postAQuestion(PostQuestionRequest postQuestionRequest, String username) {
         Instant currentTimestamp = Instant.now();
@@ -31,21 +37,29 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public QUESTION getAQuestion(String qId) {
-        return questionRepository.findQuestionById(qId);
+    public QUESTION getAQuestion(String questionId) {
+        return questionRepository.findQuestionById(questionId);
+    }
+
+    @Override
+    public List<ANSWER> getAllAnswersOfAQuestion(String questionId) {
+        return answerRepository.getAllAnswersByQuestionId(questionId);
     }
 
     @Override
     public PostAnswerResponse postAnAnswer(PostAnswerRequest postAnswerRequest, String username, String questionId) {
         Instant currentTimestamp = Instant.now();
         String answerId = "a".concat(UniqueId.getUniqueId(username.concat(currentTimestamp.toString())));
-        return questionRepository.insertAnswer(postAnswerRequest, username, currentTimestamp, questionId, answerId);
+        return answerRepository.insertAnswer(postAnswerRequest, username, currentTimestamp, questionId, answerId);
     }
 
     @Override
     public PostCommentResponse postAComment(PostCommentRequest postCommentRequest, String username, String questionId, String answerId) {
         Instant currentTimestamp = Instant.now();
         String commentId = "c".concat(UniqueId.getUniqueId(username.concat(currentTimestamp.toString())));
-        return questionRepository.insertComment(postCommentRequest, username, currentTimestamp, questionId, answerId, commentId);
+        if(!answerId.isEmpty()){
+            return answerRepository.insertComment(postCommentRequest, username, currentTimestamp, answerId, commentId);
+        }
+        return questionRepository.insertComment(postCommentRequest, username, currentTimestamp, questionId, commentId);
     }
 }

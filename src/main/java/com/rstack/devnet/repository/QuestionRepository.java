@@ -41,12 +41,10 @@ public class QuestionRepository {
 
     public QUESTION insertQuestion(PostQuestionRequest postQuestionRequest, String currentUser, Instant currentTimestamp, String questionId) {
         QUESTION question = new QUESTION();
-        List<ANSWER> answers = new ArrayList<>();
         List<COMMENT> comments = new ArrayList<>();
         question.setQuestionId(questionId);
         question.setQuestionHeader(postQuestionRequest.getQuestionHeader());
         question.setQuestionBody(postQuestionRequest.getQuestionBody());
-        question.setAnswerObj(answers);
         question.setByUser(currentUser);
         question.setCommentObj(comments);
         question.setPostedAt(currentTimestamp);
@@ -55,31 +53,7 @@ public class QuestionRepository {
         return mongoTemplate.insert(question, QUESTION_COLLECTION);
     }
 
-    public PostAnswerResponse insertAnswer(PostAnswerRequest postAnswerRequest, String username, Instant currentTimestamp, String questionId, String answerId) {
-        // TODO: Show warning if same user adds answer for same question, suggest for editing present answer
-        try {
-            List<COMMENT> comments = new ArrayList<>();
-            ANSWER answer = new ANSWER();
-            Update update = new Update();
-            Query query = new Query();
-            answer.setAnswerBody(postAnswerRequest.getAnswerBody());
-            answer.setAnswerId(answerId);
-            answer.setByUser(username);
-            answer.setCommentObj(comments);
-            answer.setPostedAt(currentTimestamp);
-            answer.setUpVotes(1);
-            answer.setDownVotes(0);
-            update.push("answerObj", answer);
-            Criteria findQuestionByIdCriteria = new Criteria("questionId").is(questionId);
-            query.addCriteria(findQuestionByIdCriteria);
-            mongoTemplate.updateFirst(query, update, QUESTION.class, QUESTION_COLLECTION);
-            return new PostAnswerResponse("Successfully updated!", answer);
-        } catch (Exception e) {
-            return new PostAnswerResponse("Failed to update, Reason: " + e.toString(), null);
-        }
-    }
-
-    public PostCommentResponse insertComment(PostCommentRequest postCommentRequest, String username, Instant currentTimestamp, String questionId, String answerId, String commentId) {
+    public PostCommentResponse insertComment(PostCommentRequest postCommentRequest, String username, Instant currentTimestamp, String questionId, String commentId) {
         COMMENT comment = new COMMENT();
         Update update = new Update();
         comment.setCommentBody(postCommentRequest.getCommentBody());
@@ -91,11 +65,9 @@ public class QuestionRepository {
         Query query = new Query();
         update.push("commentObj", comment);
         try {
-            query.addCriteria(answerId.isEmpty() ?
-                    (new Criteria("questionId").is(questionId)) :
-                    (new Criteria("answerObj.answerId").is(answerId).andOperator(Criteria.where("questionId").is(questionId))));
+            query.addCriteria(new Criteria("questionId").is(questionId));
             mongoTemplate.updateFirst(query, update, QUESTION.class, QUESTION_COLLECTION);
-            return new PostCommentResponse("Successfully updated!", comment);
+            return new PostCommentResponse("Successfully Added comment to Question!", comment);
         } catch (Exception e) {
             return new PostCommentResponse("Failed to update, Reason: " + e.toString(), null);
         }

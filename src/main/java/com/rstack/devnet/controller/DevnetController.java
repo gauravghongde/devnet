@@ -3,6 +3,7 @@ package com.rstack.devnet.controller;
 import com.rstack.devnet.model.QUESTION;
 import com.rstack.devnet.security.JwtTokenProvider;
 import com.rstack.devnet.service.IPostService;
+import com.rstack.devnet.service.ISearchService;
 import com.rstack.devnet.service.MyUserDetailsService;
 import com.rstack.devnet.utility.*;
 import org.slf4j.Logger;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin("*")
@@ -32,6 +35,9 @@ public class DevnetController {
     @Autowired
     private IPostService postService;
 
+    @Autowired
+    private ISearchService searchService;
+
     ////////// USER /////
     @GetMapping(value = "/home/ping")
     public ResponseEntity<String> pingHome() {
@@ -40,6 +46,7 @@ public class DevnetController {
 
 
     /*
+     USERS                  /users/<userID>/<username>
      GET ALL QUESTIONS      /questions
      POST A QUESTION        /questions/post
      GET A QUESTION         /questions/<QID>
@@ -89,27 +96,28 @@ public class DevnetController {
 
     /////////// VIEW A QUESTION ///////////////
     @GetMapping(value = "/questions/{questionId}/{questionHeader}", produces = "application/json")
-    public ResponseEntity<QUESTION> viewQuestion(@PathVariable String questionId,
-                                                 @PathVariable String questionHeader) {
-        QUESTION questionDTO = postService.getAQuestion(questionId);
-        return ResponseEntity.ok(questionDTO);
+    public ResponseEntity<QueWithAnsResponse> viewQuestion(@PathVariable String questionId,
+                                                           @PathVariable String questionHeader) {
+        //check if this is a good practice to combine two queries
+        //OR to use JOIN $lookup
+        QueWithAnsResponse queWithAnsResponse = new QueWithAnsResponse();
+        queWithAnsResponse.setQuestion(postService.getAQuestion(questionId));
+        queWithAnsResponse.setListOfAnswers(postService.getAllAnswersOfAQuestion(questionId));
+        return ResponseEntity.ok(queWithAnsResponse);
     }
 
     /////////// SEARCH QUESTIONS ///////////////
     //accepts -> string of search query
     //returns -> questions matching the string
-    @GetMapping(value = "/questions/{searchQuery}")
-    public ResponseEntity<?> searchQuestions(@PathVariable String searchQuery) {
-        return null;
+    @GetMapping(value = "/search")
+    public ResponseEntity<?> searchQuestions(@RequestParam(value = "filterBy", defaultValue = "relevance") String filterBy,
+                                             @RequestParam("query") String searchQuery) {
+        List<QUESTION> questions = searchService.getSearchResults(filterBy, searchQuery, false, false);
+        return ResponseEntity.ok(!questions.isEmpty() ? questions : "NO QUESTION FOUND");
     }
 
     @PostMapping(value = "/vote")
     public ResponseEntity<?> vote(@RequestBody PostQuestionRequest postQuestionRequest) throws Exception {
-//        ADD
-//        username
-//        postQuestionRequest.getQuestionHeader();
-//        postQuestionRequest.getQuestionBody();
-//        to database
         return ResponseEntity.ok("ADDED");
     }
 
