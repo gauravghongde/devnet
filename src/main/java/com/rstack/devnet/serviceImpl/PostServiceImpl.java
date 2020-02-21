@@ -33,7 +33,7 @@ public class PostServiceImpl implements IPostService {
     @Override
     public PostResponse postAQuestion(PostRequest postRequest, String username) {
         Instant currentTimestamp = Instant.now();
-        String questionId = "q".concat(UniqueId.getUniqueId(username.concat(currentTimestamp.toString())));
+        String questionId = "q".concat(UniqueIdHelper.getUniqueId(username.concat(currentTimestamp.toString())));
         //^ Because two or more users can post at same instance of time
         return postRepository.insertPost(postRequest, username, currentTimestamp, questionId, "");
     }
@@ -51,14 +51,14 @@ public class PostServiceImpl implements IPostService {
     @Override
     public PostResponse postAnAnswer(PostRequest postRequest, String username, String questionId) {
         Instant currentTimestamp = Instant.now();
-        String answerId = "a".concat(UniqueId.getUniqueId(username.concat(currentTimestamp.toString())));
+        String answerId = "a".concat(UniqueIdHelper.getUniqueId(username.concat(currentTimestamp.toString())));
         return postRepository.insertPost(postRequest, username, currentTimestamp, questionId, answerId);
     }
 
     @Override
     public CommentResponse postAComment(CommentRequest commentRequest, String username, String postId) {
         Instant currentTimestamp = Instant.now();
-        String commentId = "c".concat(UniqueId.getUniqueId(username.concat(currentTimestamp.toString())));
+        String commentId = "c".concat(UniqueIdHelper.getUniqueId(username.concat(currentTimestamp.toString())));
         return postRepository.insertComment(commentRequest, username, currentTimestamp, postId, commentId);
     }
 }
