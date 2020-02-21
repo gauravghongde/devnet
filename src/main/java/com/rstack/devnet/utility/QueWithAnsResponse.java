@@ -5,8 +5,8 @@ import com.rstack.devnet.model.POST;
 import java.util.List;
 
 public class QueWithAnsResponse {
-    POST question;
-    List<POST> listOfAnswers;
+    private POST question;
+    private List<POST> listOfAnswers;
 
     public QueWithAnsResponse() {
     }

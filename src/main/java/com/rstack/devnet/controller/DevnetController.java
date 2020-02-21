@@ -1,17 +1,12 @@
 package com.rstack.devnet.controller;
 
 import com.rstack.devnet.model.POST;
-import com.rstack.devnet.security.JwtTokenProvider;
 import com.rstack.devnet.service.IPostService;
 import com.rstack.devnet.service.ISearchService;
 import com.rstack.devnet.service.IVoteService;
-import com.rstack.devnet.service.MyUserDetailsService;
 import com.rstack.devnet.utility.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,18 +15,6 @@ import java.util.List;
 @RestController
 @CrossOrigin("*")
 public class DevnetController {
-
-    private final Logger log = LoggerFactory.getLogger(DevnetController.class);
-
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private MyUserDetailsService userDetailsService;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private IPostService postService;
