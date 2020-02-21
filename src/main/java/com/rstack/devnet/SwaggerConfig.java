@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static springfox.documentation.builders.PathSelectors.regex;
-
 @EnableSwagger2
 @Configuration
 @Import(springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration.class)

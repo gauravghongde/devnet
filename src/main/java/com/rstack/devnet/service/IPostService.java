@@ -1,19 +1,21 @@
 package com.rstack.devnet.service;
 
-import com.rstack.devnet.model.ANSWER;
-import com.rstack.devnet.model.QUESTION;
-import com.rstack.devnet.utility.*;
+import com.rstack.devnet.model.POST;
+import com.rstack.devnet.utility.CommentRequest;
+import com.rstack.devnet.utility.CommentResponse;
+import com.rstack.devnet.utility.PostRequest;
+import com.rstack.devnet.utility.PostResponse;
 
 import java.util.List;
 
 public interface IPostService {
-    PostQuestionResponse postAQuestion(PostQuestionRequest postQuestionRequest, String username);
+    PostResponse postAQuestion(PostRequest postRequest, String username);
 
-    QUESTION getAQuestion(String questionId);
+    POST getAQuestion(String questionId);
 
-    List<ANSWER> getAllAnswersOfAQuestion(String questionId);
+    List<POST> getAllAnswersOfAQuestion(String questionId);
 
-    PostAnswerResponse postAnAnswer(PostAnswerRequest postAnswerRequest, String username, String questionId);
+    PostResponse postAnAnswer(PostRequest postRequest, String username, String questionId);
 
-    PostCommentResponse postAComment(PostCommentRequest postCommentRequest, String username, String questionId, String answerId);
+    CommentResponse postAComment(CommentRequest commentRequest, String username, String postId);
 }

@@ -2,14 +2,14 @@ package com.rstack.devnet.utility;
 
 import com.rstack.devnet.model.COMMENT;
 
-public class PostCommentResponse {
+public class CommentResponse {
     private String message;
     private COMMENT commentObj;
 
-    public PostCommentResponse() {
+    public CommentResponse() {
     }
 
-    public PostCommentResponse(String message, COMMENT commentObj) {
+    public CommentResponse(String message, COMMENT commentObj) {
         this.message = message;
         this.commentObj = commentObj;
     }
