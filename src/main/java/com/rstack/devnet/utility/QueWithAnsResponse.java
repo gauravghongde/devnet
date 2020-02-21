@@ -1,35 +1,34 @@
 package com.rstack.devnet.utility;
 
-import com.rstack.devnet.model.ANSWER;
-import com.rstack.devnet.model.QUESTION;
+import com.rstack.devnet.model.POST;
 
 import java.util.List;
 
 public class QueWithAnsResponse {
-    QUESTION question;
-    List<ANSWER> listOfAnswers;
+    POST question;
+    List<POST> listOfAnswers;
 
     public QueWithAnsResponse() {
     }
 
-    public QueWithAnsResponse(QUESTION question, List<ANSWER> listOfAnswers) {
+    public QueWithAnsResponse(POST question, List<POST> listOfAnswers) {
         this.question = question;
         this.listOfAnswers = listOfAnswers;
     }
 
-    public QUESTION getQuestion() {
+    public POST getQuestion() {
         return question;
     }
 
-    public void setQuestion(QUESTION question) {
+    public void setQuestion(POST question) {
         this.question = question;
     }
 
-    public List<ANSWER> getListOfAnswers() {
+    public List<POST> getListOfAnswers() {
         return listOfAnswers;
     }
 
-    public void setListOfAnswers(List<ANSWER> listOfAnswers) {
+    public void setListOfAnswers(List<POST> listOfAnswers) {
         this.listOfAnswers = listOfAnswers;
     }
 }

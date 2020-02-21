@@ -1,6 +1,7 @@
 package com.rstack.devnet.model;
 
 import java.time.Instant;
+import java.util.HashMap;
 
 public class COMMENT {
     private String commentId;
@@ -9,17 +10,19 @@ public class COMMENT {
     private Instant postedAt;
     private int upVotes;
     private int downVotes;
+    private HashMap<String,Integer> usersInteracted;
 
     public COMMENT() {
     }
 
-    public COMMENT(String commentId, String commentBody, String byUser, Instant postedAt, int upVotes, int downVotes) {
+    public COMMENT(String commentId, String commentBody, String byUser, Instant postedAt, int upVotes, int downVotes, HashMap<String, Integer> usersInteracted) {
         this.commentId = commentId;
         this.commentBody = commentBody;
         this.byUser = byUser;
         this.postedAt = postedAt;
         this.upVotes = upVotes;
         this.downVotes = downVotes;
+        this.usersInteracted = usersInteracted;
     }
 
     public String getCommentId() {
@@ -68,5 +71,13 @@ public class COMMENT {
 
     public void setDownVotes(int downVotes) {
         this.downVotes = downVotes;
+    }
+
+    public HashMap<String, Integer> getUsersInteracted() {
+        return usersInteracted;
+    }
+
+    public void setUsersInteracted(HashMap<String, Integer> usersInteracted) {
+        this.usersInteracted = usersInteracted;
     }
 }

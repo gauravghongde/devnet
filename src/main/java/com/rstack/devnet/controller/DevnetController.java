@@ -1,9 +1,10 @@
 package com.rstack.devnet.controller;
 
-import com.rstack.devnet.model.QUESTION;
+import com.rstack.devnet.model.POST;
 import com.rstack.devnet.security.JwtTokenProvider;
 import com.rstack.devnet.service.IPostService;
 import com.rstack.devnet.service.ISearchService;
+import com.rstack.devnet.service.IVoteService;
 import com.rstack.devnet.service.MyUserDetailsService;
 import com.rstack.devnet.utility.*;
 import org.slf4j.Logger;
@@ -38,6 +39,9 @@ public class DevnetController {
     @Autowired
     private ISearchService searchService;
 
+    @Autowired
+    private IVoteService voteService;
+
     ////////// USER /////
     @GetMapping(value = "/home/ping")
     public ResponseEntity<String> pingHome() {
@@ -67,31 +71,30 @@ public class DevnetController {
 
     /////// POST QUESTION /////////
     @PostMapping(value = "/questions/post")
-    public ResponseEntity<String> postQuestion(@RequestBody PostQuestionRequest postQuestionRequest, Authentication authentication) throws Exception {
+    public ResponseEntity<String> postQuestion(@RequestBody PostRequest postRequest, Authentication authentication) throws Exception {
         String username = authentication.getName();
-        postService.postAQuestion(postQuestionRequest, username);
+        postService.postAQuestion(postRequest, username);
         return ResponseEntity.ok().body("ADDED");
     }
 
     /////// POST ANSWER /////////
     @PostMapping(value = "questions/{questionId}/answers/post")
     public ResponseEntity<String> postAnswer(@PathVariable String questionId,
-                                             @RequestBody PostAnswerRequest postAnswerRequest,
+                                             @RequestBody PostRequest postRequest,
                                              Authentication authentication) throws Exception {
         String username = authentication.getName();
-        PostAnswerResponse postAnswerResponse = postService.postAnAnswer(postAnswerRequest, username, questionId);
-        return ResponseEntity.ok().body(postAnswerResponse.getPostAnswerMessage());
+        PostResponse postResponse = postService.postAnAnswer(postRequest, username, questionId);
+        return ResponseEntity.ok().body(postResponse.getMessage());
     }
 
     /////////// ADD A COMMENT ///////////////
-    @PostMapping(value = "posts/{questionId}/add")
-    public ResponseEntity<?> postComment(@PathVariable String questionId,
-                                         @RequestParam(value = "answerId", defaultValue = "") String answerId, //required is set to false if defaultValue is used
-                                         @RequestBody PostCommentRequest postCommentRequest,
+    @PostMapping(value = "posts/{postId}/add")
+    public ResponseEntity<?> postComment(@PathVariable String postId,
+                                         @RequestBody CommentRequest commentRequest,
                                          Authentication authentication) {
         String username = authentication.getName();
-        PostCommentResponse postCommentResponse = postService.postAComment(postCommentRequest, username, questionId, answerId);
-        return ResponseEntity.ok().body(postCommentResponse.getMessage());
+        CommentResponse commentResponse = postService.postAComment(commentRequest, username, postId);
+        return ResponseEntity.ok().body(commentResponse.getMessage());
     }
 
     /////////// VIEW A QUESTION ///////////////
@@ -112,13 +115,33 @@ public class DevnetController {
     @GetMapping(value = "/search")
     public ResponseEntity<?> searchQuestions(@RequestParam(value = "filterBy", defaultValue = "relevance") String filterBy,
                                              @RequestParam("query") String searchQuery) {
-        List<QUESTION> questions = searchService.getSearchResults(filterBy, searchQuery, false, false);
+        List<POST> questions = searchService.getSearchResults(filterBy, searchQuery, false, false);
         return ResponseEntity.ok(!questions.isEmpty() ? questions : "NO QUESTION FOUND");
     }
 
-    @PostMapping(value = "/vote")
-    public ResponseEntity<?> vote(@RequestBody PostQuestionRequest postQuestionRequest) throws Exception {
-        return ResponseEntity.ok("ADDED");
+    /////////// VOTING SYSTEM ///////////////
+    /*
+    BUD
+    000 -> 0 -> No BM, No UV, No DV
+    001 -> 1 -> No BM, No UV, DV
+    010 -> 2 -> No BM, UV, No DV
+
+    100 -> 4 -> BM, No UV, No DV
+    101 -> 5 -> BM, No UV, DV
+    110 -> 6 -> BM, UV, No DV
+
+    */
+
+    @GetMapping(value = "/posts/{postId}/vote")
+    public ResponseEntity<?> vote(@PathVariable String postId,
+                                  @RequestParam(value = "commentId", defaultValue = "") String commentId,
+                                  @RequestParam("voteId") int voteId,
+                                  Authentication authentication
+    ) throws Exception {
+
+        String username = authentication.getName();
+        String message = voteService.voteAPost(username, voteId, postId, commentId);
+        return ResponseEntity.ok(message);
     }
 
     //////////////////////////////////////////////////

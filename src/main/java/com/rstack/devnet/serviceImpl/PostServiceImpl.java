@@ -1,8 +1,8 @@
 package com.rstack.devnet.serviceImpl;
 
-import com.rstack.devnet.model.ANSWER;
-import com.rstack.devnet.model.QUESTION;
+import com.rstack.devnet.model.POST;
 import com.rstack.devnet.repository.AnswerRepository;
+import com.rstack.devnet.repository.PostRepository;
 import com.rstack.devnet.repository.QuestionRepository;
 import com.rstack.devnet.service.IPostService;
 import com.rstack.devnet.utility.*;
@@ -25,41 +25,40 @@ public class PostServiceImpl implements IPostService {
     private QuestionRepository questionRepository;
 
     @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
     private AnswerRepository answerRepository;
 
     @Override
-    public PostQuestionResponse postAQuestion(PostQuestionRequest postQuestionRequest, String username) {
+    public PostResponse postAQuestion(PostRequest postRequest, String username) {
         Instant currentTimestamp = Instant.now();
         String questionId = "q".concat(UniqueId.getUniqueId(username.concat(currentTimestamp.toString())));
         //^ Because two or more users can post at same instance of time
-        questionRepository.insertQuestion(postQuestionRequest, username, currentTimestamp, questionId);
-        return new PostQuestionResponse("SUCCESS");
+        return postRepository.insertPost(postRequest, username, currentTimestamp, questionId, "");
     }
 
     @Override
-    public QUESTION getAQuestion(String questionId) {
+    public POST getAQuestion(String questionId) {
         return questionRepository.findQuestionById(questionId);
     }
 
     @Override
-    public List<ANSWER> getAllAnswersOfAQuestion(String questionId) {
+    public List<POST> getAllAnswersOfAQuestion(String questionId) {
         return answerRepository.getAllAnswersByQuestionId(questionId);
     }
 
     @Override
-    public PostAnswerResponse postAnAnswer(PostAnswerRequest postAnswerRequest, String username, String questionId) {
+    public PostResponse postAnAnswer(PostRequest postRequest, String username, String questionId) {
         Instant currentTimestamp = Instant.now();
         String answerId = "a".concat(UniqueId.getUniqueId(username.concat(currentTimestamp.toString())));
-        return answerRepository.insertAnswer(postAnswerRequest, username, currentTimestamp, questionId, answerId);
+        return postRepository.insertPost(postRequest, username, currentTimestamp, questionId, answerId);
     }
 
     @Override
-    public PostCommentResponse postAComment(PostCommentRequest postCommentRequest, String username, String questionId, String answerId) {
+    public CommentResponse postAComment(CommentRequest commentRequest, String username, String postId) {
         Instant currentTimestamp = Instant.now();
         String commentId = "c".concat(UniqueId.getUniqueId(username.concat(currentTimestamp.toString())));
-        if(!answerId.isEmpty()){
-            return answerRepository.insertComment(postCommentRequest, username, currentTimestamp, answerId, commentId);
-        }
-        return questionRepository.insertComment(postCommentRequest, username, currentTimestamp, questionId, commentId);
+        return postRepository.insertComment(commentRequest, username, currentTimestamp, postId, commentId);
     }
 }

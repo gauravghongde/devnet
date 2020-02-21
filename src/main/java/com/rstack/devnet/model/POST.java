@@ -5,42 +5,49 @@ import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 
-@Document(collection = "QUESTION")
-public class QUESTION {
+@Document(collection = "POST")
+public class POST {
     @Id
-    private String questionId;
+    private String postId;
     @TextIndexed(weight = 2)
     private String questionHeader;
     @TextIndexed
     private String questionBody;
-    private String byUser; //username
+    private String answerBody;
+    private String postedBy; //username
     private Instant postedAt;
+    private String forQuestion;
     private int upVotes;
     private int downVotes;
+    private HashMap<String, Integer> usersInteracted;
     private List<COMMENT> commentObj;
 
-    public QUESTION() {
+    public POST() {
     }
 
-    public QUESTION(String questionId, String questionHeader, String questionBody, String byUser, Instant postedAt, int upVotes, int downVotes, List<COMMENT> commentObj) {
-        this.questionId = questionId;
+    public POST(String postId, String questionHeader, String questionBody, String answerBody, String postedBy, Instant postedAt, String forQuestion, int upVotes, int downVotes, HashMap<String, Integer> usersInteracted, List<COMMENT> commentObj) {
+        this.postId = postId;
         this.questionHeader = questionHeader;
         this.questionBody = questionBody;
-        this.byUser = byUser;
+        this.answerBody = answerBody;
+        this.postedBy = postedBy;
         this.postedAt = postedAt;
+        this.forQuestion = forQuestion;
         this.upVotes = upVotes;
         this.downVotes = downVotes;
+        this.usersInteracted = usersInteracted;
         this.commentObj = commentObj;
     }
 
-    public String getQuestionId() {
-        return questionId;
+    public String getPostId() {
+        return postId;
     }
 
-    public void setQuestionId(String questionId) {
-        this.questionId = questionId;
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public String getQuestionHeader() {
@@ -59,12 +66,20 @@ public class QUESTION {
         this.questionBody = questionBody;
     }
 
-    public String getByUser() {
-        return byUser;
+    public String getAnswerBody() {
+        return answerBody;
     }
 
-    public void setByUser(String byUser) {
-        this.byUser = byUser;
+    public void setAnswerBody(String answerBody) {
+        this.answerBody = answerBody;
+    }
+
+    public String getPostedBy() {
+        return postedBy;
+    }
+
+    public void setPostedBy(String postedBy) {
+        this.postedBy = postedBy;
     }
 
     public Instant getPostedAt() {
@@ -73,6 +88,14 @@ public class QUESTION {
 
     public void setPostedAt(Instant postedAt) {
         this.postedAt = postedAt;
+    }
+
+    public String getForQuestion() {
+        return forQuestion;
+    }
+
+    public void setForQuestion(String forQuestion) {
+        this.forQuestion = forQuestion;
     }
 
     public int getUpVotes() {
@@ -89,6 +112,14 @@ public class QUESTION {
 
     public void setDownVotes(int downVotes) {
         this.downVotes = downVotes;
+    }
+
+    public HashMap<String, Integer> getUsersInteracted() {
+        return usersInteracted;
+    }
+
+    public void setUsersInteracted(HashMap<String, Integer> usersInteracted) {
+        this.usersInteracted = usersInteracted;
     }
 
     public List<COMMENT> getCommentObj() {

@@ -1,12 +1,12 @@
 package com.rstack.devnet.utility;
 
-public class PostCommentRequest {
+public class CommentRequest {
     private String commentBody;
 
-    public PostCommentRequest() {
+    public CommentRequest() {
     }
 
-    public PostCommentRequest(String commentBody) {
+    public CommentRequest(String commentBody) {
         this.commentBody = commentBody;
     }
 
