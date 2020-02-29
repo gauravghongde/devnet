@@ -2,12 +2,15 @@ package com.rstack.devnet.serviceImpl;
 
 import com.rstack.devnet.model.USER;
 import com.rstack.devnet.repository.UserRepository;
+import com.rstack.devnet.security.JwtTokenProvider;
 import com.rstack.devnet.service.IAuthService;
+import com.rstack.devnet.service.MyUserDetailsService;
 import com.rstack.devnet.utility.LoginRequest;
 import com.rstack.devnet.utility.LoginResponse;
 import com.rstack.devnet.utility.RegisterRequest;
 import com.rstack.devnet.utility.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,18 +19,21 @@ public class AuthServiceImpl implements IAuthService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private MyUserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+
     @Override
     public LoginResponse loginUser(LoginRequest loginRequest) {
-        LoginResponse loginResponse;
-
         USER user = userRepository.loginUser(loginRequest);
 
-        if (user != null) {
-            loginResponse = new LoginResponse("SUCCESS", user.getUsername());
-        } else {
-            loginResponse = new LoginResponse("FAILED LOGIN", user.getUsername());
-        }
-        return loginResponse;
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+        final String jwt = jwtTokenProvider.createToken(userDetails);
+
+        return new LoginResponse(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail(), jwt);
     }
 
     @Override
