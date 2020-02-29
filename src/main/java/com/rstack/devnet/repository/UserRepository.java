@@ -32,9 +32,8 @@ public class UserRepository {
 
     public USER loginUser(LoginRequest loginRequest) {
         Criteria loginUsernameCriteria = new Criteria("username").is(loginRequest.getUsername());
-        Criteria loginPasswordCriteria = new Criteria("encryptedPassword").is(loginRequest.getPassword());
         Query query = new Query();
-        query.addCriteria(loginUsernameCriteria).addCriteria(loginPasswordCriteria);
+        query.addCriteria(loginUsernameCriteria);
         return mongoTemplate.findOne(query, USER.class, USER_COLLECTION);
     }
 
