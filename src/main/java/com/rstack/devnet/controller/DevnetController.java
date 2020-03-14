@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class DevnetController {
 
     @Autowired
