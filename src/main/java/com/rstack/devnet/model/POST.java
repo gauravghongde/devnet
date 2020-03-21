@@ -22,13 +22,14 @@ public class POST {
     private String forQuestion;
     private int upVotes;
     private int downVotes;
+    private int voteStatus;
     private HashMap<String, Integer> usersInteracted;
     private List<COMMENT> commentObj;
 
     public POST() {
     }
 
-    public POST(String postId, String questionHeader, String questionBody, String answerBody, String postedBy, Instant postedAt, String forQuestion, int upVotes, int downVotes, HashMap<String, Integer> usersInteracted, List<COMMENT> commentObj) {
+    public POST(String postId, String questionHeader, String questionBody, String answerBody, String postedBy, Instant postedAt, String forQuestion, int upVotes, int downVotes, int voteStatus, HashMap<String, Integer> usersInteracted, List<COMMENT> commentObj) {
         this.postId = postId;
         this.questionHeader = questionHeader;
         this.questionBody = questionBody;
@@ -38,6 +39,7 @@ public class POST {
         this.forQuestion = forQuestion;
         this.upVotes = upVotes;
         this.downVotes = downVotes;
+        this.voteStatus = voteStatus;
         this.usersInteracted = usersInteracted;
         this.commentObj = commentObj;
     }
@@ -112,6 +114,14 @@ public class POST {
 
     public void setDownVotes(int downVotes) {
         this.downVotes = downVotes;
+    }
+
+    public int getVoteStatus() {
+        return voteStatus;
+    }
+
+    public void setVoteStatus(int voteStatus) {
+        this.voteStatus = voteStatus;
     }
 
     public HashMap<String, Integer> getUsersInteracted() {

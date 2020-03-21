@@ -84,12 +84,14 @@ public class DevnetController {
     /////////// VIEW A QUESTION ///////////////
     @GetMapping(value = "/questions/{questionId}/{questionHeader}", produces = "application/json")
     public ResponseEntity<QueWithAnsResponse> viewQuestion(@PathVariable String questionId,
-                                                           @PathVariable String questionHeader) {
+                                                           @PathVariable String questionHeader,
+                                                           Authentication authentication) {
         //check if this is a good practice to combine two queries
         //OR to use JOIN $lookup
+        String username = authentication.getName();
         QueWithAnsResponse queWithAnsResponse = new QueWithAnsResponse();
-        queWithAnsResponse.setQuestion(postService.getAQuestion(questionId));
-        queWithAnsResponse.setListOfAnswers(postService.getAllAnswersOfAQuestion(questionId));
+        queWithAnsResponse.setQuestion(postService.getAQuestion(questionId, username));
+        queWithAnsResponse.setListOfAnswers(postService.getAllAnswersOfAQuestion(questionId, username));
         return ResponseEntity.ok(queWithAnsResponse);
     }
 

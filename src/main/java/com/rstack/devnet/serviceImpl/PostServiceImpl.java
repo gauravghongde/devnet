@@ -39,13 +39,23 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public POST getAQuestion(String questionId) {
-        return questionRepository.findQuestionById(questionId);
+    public POST getAQuestion(String questionId, String username) {
+        POST postRetObj;
+        postRetObj = questionRepository.findQuestionById(questionId);
+        postRetObj.setVoteStatus(postRetObj.getUsersInteracted().getOrDefault(username,0));
+        postRetObj.getCommentObj().stream().forEach(commentObj -> commentObj.setVoteStatus(commentObj.getUsersInteracted().getOrDefault(username,0)));
+        return postRetObj;
     }
 
     @Override
-    public List<POST> getAllAnswersOfAQuestion(String questionId) {
-        return answerRepository.getAllAnswersByQuestionId(questionId);
+    public List<POST> getAllAnswersOfAQuestion(String questionId, String username) {
+        List<POST> ansListRetObj;
+        ansListRetObj = answerRepository.getAllAnswersByQuestionId(questionId);
+        ansListRetObj.stream().forEach(ansObj -> {
+            ansObj.setVoteStatus(ansObj.getUsersInteracted().getOrDefault(username, 0));
+            ansObj.getCommentObj().stream().forEach(commentObj -> commentObj.setVoteStatus(commentObj.getUsersInteracted().getOrDefault(username,0)));
+        });
+        return ansListRetObj;
     }
 
     @Override

@@ -10,18 +10,20 @@ public class COMMENT {
     private Instant postedAt;
     private int upVotes;
     private int downVotes;
+    private int voteStatus;
     private HashMap<String,Integer> usersInteracted;
 
     public COMMENT() {
     }
 
-    public COMMENT(String commentId, String commentBody, String byUser, Instant postedAt, int upVotes, int downVotes, HashMap<String, Integer> usersInteracted) {
+    public COMMENT(String commentId, String commentBody, String byUser, Instant postedAt, int upVotes, int downVotes, int voteStatus, HashMap<String, Integer> usersInteracted) {
         this.commentId = commentId;
         this.commentBody = commentBody;
         this.byUser = byUser;
         this.postedAt = postedAt;
         this.upVotes = upVotes;
         this.downVotes = downVotes;
+        this.voteStatus = voteStatus;
         this.usersInteracted = usersInteracted;
     }
 
@@ -71,6 +73,14 @@ public class COMMENT {
 
     public void setDownVotes(int downVotes) {
         this.downVotes = downVotes;
+    }
+
+    public int getVoteStatus() {
+        return voteStatus;
+    }
+
+    public void setVoteStatus(int voteStatus) {
+        this.voteStatus = voteStatus;
     }
 
     public HashMap<String, Integer> getUsersInteracted() {

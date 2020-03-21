@@ -11,9 +11,9 @@ import java.util.List;
 public interface IPostService {
     PostResponse postAQuestion(PostRequest postRequest, String username);
 
-    POST getAQuestion(String questionId);
+    POST getAQuestion(String questionId, String username);
 
-    List<POST> getAllAnswersOfAQuestion(String questionId);
+    List<POST> getAllAnswersOfAQuestion(String questionId, String username);
 
     PostResponse postAnAnswer(PostRequest postRequest, String username, String questionId);
 
