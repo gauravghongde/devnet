@@ -1,6 +1,5 @@
 package com.rstack.devnet.service.vote;
 
-import com.rstack.devnet.repository.PostRepository;
 import com.rstack.devnet.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

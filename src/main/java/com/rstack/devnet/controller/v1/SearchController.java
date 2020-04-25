@@ -1,7 +1,6 @@
 package com.rstack.devnet.controller.v1;
 
 import com.rstack.devnet.dto.model.PostDTO;
-import com.rstack.devnet.model.Post;
 import com.rstack.devnet.service.search.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,7 @@ public class SearchController {
 
     @GetMapping(value = "/search")
     public ResponseEntity<List<PostDTO>> searchQuestions(@RequestParam(value = "filterBy", defaultValue = "relevance") String filterBy,
-                                                      @RequestParam("query") String searchQuery) {
+                                                         @RequestParam("query") String searchQuery) {
         List<PostDTO> questions = searchService.getSearchResults(filterBy, searchQuery, false, false);
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }

@@ -1,7 +1,6 @@
 package com.rstack.devnet.service.search;
 
 import com.rstack.devnet.dto.model.PostDTO;
-import com.rstack.devnet.model.Post;
 
 import java.util.List;
 

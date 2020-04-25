@@ -1,5 +1,6 @@
 package com.rstack.devnet.repository;
 
+import com.rstack.devnet.exception.RecordNotFoundException;
 import com.rstack.devnet.model.Comment;
 import com.rstack.devnet.model.Post;
 import org.slf4j.Logger;
@@ -39,6 +40,10 @@ public class VoteRepository {
         Update update = new Update();
         Query query = new Query(where(ID_FIELD).is(postId));
         Post post = mongoTemplate.findOne(query, Post.class);
+        if (post == null) {
+            LOG.warn("post not found with the postId");
+            throw new RecordNotFoundException("Vote Query Failed");
+        }
         try {
             if (commentId.isEmpty()) {
                 update.set(String.format(USERS_INTERACTED_FIELD, username), voteId);
@@ -72,9 +77,14 @@ public class VoteRepository {
                 }
             } else {
                 List<Comment> cmtList = post.getComments();
-                index = IntStream.range(0, cmtList.size())
-                        .filter(i -> commentId.equals(cmtList.get(i).getId()))
-                        .findFirst().getAsInt();
+                try {
+                    index = IntStream.range(0, cmtList.size())
+                            .filter(i -> commentId.equals(cmtList.get(i).getId()))
+                            .findFirst().getAsInt();
+                } catch (Exception e) {
+                    LOG.warn("Comment not found with the commentId - ", commentId);
+                    throw new RecordNotFoundException("Vote Query Failed");
+                }
                 update.set(String.format(COMMENT_USERS_INTERACTED_FIELD, index, username), voteId);
 
                 int prevVoteId = cmtList.get(index).getUsersInteracted().getOrDefault(username, 0);
@@ -103,6 +113,9 @@ public class VoteRepository {
                             incCommentVote(update, index, UPVOTE_FIELD, 1);
                             LOG.info("[comment upvote++]");
                         }
+                        break;
+                    default:
+                        LOG.warn("Previous vote fetched unknown value");
                 }
             }
             mongoTemplate.findAndModify(query, update, Post.class, POST_COLLECTION);

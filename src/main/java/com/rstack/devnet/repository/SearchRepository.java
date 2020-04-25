@@ -20,7 +20,7 @@ import java.util.List;
 public class SearchRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(SearchRepository.class);
-    private static final String POST_COLLECTION = "POST";
+
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
