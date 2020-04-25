@@ -2,7 +2,7 @@ package com.rstack.devnet.utility;
 
 public class RegisterRequest {
     private String username;
-    private String emailId;
+    private String email;
     private String firstName;
     private String lastName;
     private String password;
@@ -10,9 +10,9 @@ public class RegisterRequest {
     public RegisterRequest() {
     }
 
-    public RegisterRequest(String username, String emailId, String firstName, String lastName, String password) {
+    public RegisterRequest(String username, String email, String firstName, String lastName, String password) {
         this.username = username;
-        this.emailId = emailId;
+        this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
@@ -26,12 +26,12 @@ public class RegisterRequest {
         this.username = username;
     }
 
-    public String getEmailId() {
-        return emailId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getFirstName() {
