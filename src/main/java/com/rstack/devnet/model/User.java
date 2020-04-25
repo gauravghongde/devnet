@@ -25,14 +25,6 @@ public class User {
         this.encryptedPassword = encryptedPassword;
     }
 
-    public User(String id, String username, String firstName, String lastName, String email) {
-        this.id = id;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
     public String getId() {
         return id;
     }
