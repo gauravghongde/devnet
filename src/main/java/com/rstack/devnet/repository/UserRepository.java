@@ -1,6 +1,6 @@
 package com.rstack.devnet.repository;
 
-import com.rstack.devnet.model.USER;
+import com.rstack.devnet.model.User;
 import com.rstack.devnet.utility.LoginRequest;
 import com.rstack.devnet.utility.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,50 +15,51 @@ import java.util.List;
 @Repository
 public class UserRepository {
 
+    private static final String USER_COLLECTION = "USER";
+    private static final String USERNAME_FIELD = "username";
+    private static final String EMAIL_FIELD = "email";
     @Autowired
     private MongoTemplate mongoTemplate;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private static final String USER_COLLECTION = "USER";
-
-    public USER findByUsernameOrEmail(String usernameOrEmail) {
-        Criteria loginUserCriteria = new Criteria("username").is(usernameOrEmail);
+    public User findByUsernameOrEmail(String usernameOrEmail) {
+        Criteria loginUserCriteria = new Criteria(USERNAME_FIELD).is(usernameOrEmail);
         Query query = new Query();
         query.addCriteria(loginUserCriteria);
-        return mongoTemplate.findOne(query, USER.class, USER_COLLECTION);
+        return mongoTemplate.findOne(query, User.class, USER_COLLECTION);
     }
 
-    public USER loginUser(LoginRequest loginRequest) {
-        Criteria loginUsernameCriteria = new Criteria("username").is(loginRequest.getUsername());
+    public User loginUser(LoginRequest loginRequest) {
+        Criteria loginUsernameCriteria = new Criteria(USERNAME_FIELD).is(loginRequest.getUsername());
         Query query = new Query();
         query.addCriteria(loginUsernameCriteria);
-        return mongoTemplate.findOne(query, USER.class, USER_COLLECTION);
+        return mongoTemplate.findOne(query, User.class, USER_COLLECTION);
     }
 
     public boolean checkIfUsernameExists(String username) {
-        Criteria usernameCriteria = new Criteria("username").is(username);
+        Criteria usernameCriteria = new Criteria(USERNAME_FIELD).is(username);
         Query query = new Query();
         query.addCriteria(usernameCriteria);
-        List<USER> users = mongoTemplate.find(query, USER.class, USER_COLLECTION);
+        List<User> users = mongoTemplate.find(query, User.class, USER_COLLECTION);
         return users.size() > 0; //returns TRUE if exists
     }
 
     public boolean checkIfEmailExists(String emailId) {
-        Criteria emailIdCriteria = new Criteria("emailId").is(emailId);
+        Criteria emailIdCriteria = new Criteria(EMAIL_FIELD).is(emailId);
         Query query = new Query();
         query.addCriteria(emailIdCriteria);
-        List<USER> users = mongoTemplate.find(query, USER.class, USER_COLLECTION);
+        List<User> users = mongoTemplate.find(query, User.class, USER_COLLECTION);
         return users.size() > 0; //returns TRUE if exists
     }
 
-    public USER registerUser(RegisterRequest registerRequest) {
-        USER user = new USER();
+    public User registerUser(RegisterRequest registerRequest) {
+        User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setEncryptedPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setFirstName(registerRequest.getFirstName());
         user.setLastName(registerRequest.getLastName());
+        user.setEmail(registerRequest.getEmail());
         return mongoTemplate.insert(user, USER_COLLECTION);
     }
 }

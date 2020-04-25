@@ -1,12 +1,6 @@
-package com.rstack.devnet.model;
+package com.rstack.devnet.dto.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "USER")
-public class USER {
-
-    @Id
+public class UserDTO {
     private String id;
     private String username;
     private String firstName;
@@ -14,24 +8,16 @@ public class USER {
     private String email;
     private String encryptedPassword;
 
-    public USER() {
+    public UserDTO() {
     }
 
-    public USER(String id, String username, String firstName, String lastName, String email, String encryptedPassword) {
+    public UserDTO(String id, String username, String firstName, String lastName, String email, String encryptedPassword) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.encryptedPassword = encryptedPassword;
-    }
-
-    public USER(String id, String username, String firstName, String lastName, String email) {
-        this.id = id;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
     }
 
     public String getId() {
