@@ -33,7 +33,7 @@ public class PostRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(PostRepository.class);
     private static final String POST_COLLECTION = "POST";
-    private static final String COMMENT_FIELD = "commentObj";
+    private static final String COMMENT_FIELD = "comments";
     private static final String QUESTION_ID_FIELD = "questionId";
     private static final String ID_FIELD = "id";
     private static final String NO_OF_ANSWERS = "noOfAnswers";

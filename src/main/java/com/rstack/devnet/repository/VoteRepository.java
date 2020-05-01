@@ -26,7 +26,7 @@ public class VoteRepository {
     private static final int DOWNVOTE_ID = 1;
     private static final int UPVOTE_ID = 2;
     private static final String ID_FIELD = "id";
-    private static final String COMMENT_FIELD = "commentObj";
+    private static final String COMMENT_FIELD = "comments";
     private static final String UPVOTE_FIELD = "vote.upVotes";
     private static final String DOWNVOTE_FIELD = "vote.downVotes";
     private static final String COMMENT_VOTE_FIELD = COMMENT_FIELD + ".%d.%s";
