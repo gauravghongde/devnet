@@ -20,6 +20,7 @@ public class Post {
     private String username;
     private Instant postedAt;
     private String questionId;
+    private int noOfAnswers; //only in case of question
     private Vote vote;
     private HashMap<String, Integer> usersInteracted;
     private List<Comment> comments;
@@ -27,7 +28,7 @@ public class Post {
     public Post() {
     }
 
-    public Post(String id, String questionHeader, String questionBody, String answerBody, String username, Instant postedAt, String questionId, Vote vote, HashMap<String, Integer> usersInteracted, List<Comment> comments) {
+    public Post(String id, String questionHeader, String questionBody, String answerBody, String username, Instant postedAt, String questionId, int noOfAnswers, Vote vote, HashMap<String, Integer> usersInteracted, List<Comment> comments) {
         this.id = id;
         this.questionHeader = questionHeader;
         this.questionBody = questionBody;
@@ -35,6 +36,7 @@ public class Post {
         this.username = username;
         this.postedAt = postedAt;
         this.questionId = questionId;
+        this.noOfAnswers = noOfAnswers;
         this.vote = vote;
         this.usersInteracted = usersInteracted;
         this.comments = comments;
@@ -94,6 +96,14 @@ public class Post {
 
     public void setQuestionId(String questionId) {
         this.questionId = questionId;
+    }
+
+    public int getNoOfAnswers() {
+        return noOfAnswers;
+    }
+
+    public void setNoOfAnswers(int noOfAnswers) {
+        this.noOfAnswers = noOfAnswers;
     }
 
     public Vote getVote() {

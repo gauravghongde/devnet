@@ -32,6 +32,7 @@ public class VoteRepository {
     private static final String COMMENT_VOTE_FIELD = COMMENT_FIELD + ".%d.%s";
     private static final String USERS_INTERACTED_FIELD = "usersInteracted.%s";
     private static final String COMMENT_USERS_INTERACTED_FIELD = COMMENT_FIELD + ".%d." + USERS_INTERACTED_FIELD;
+
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -82,7 +83,7 @@ public class VoteRepository {
                             .filter(i -> commentId.equals(cmtList.get(i).getId()))
                             .findFirst().getAsInt();
                 } catch (Exception e) {
-                    LOG.warn("Comment not found with the commentId - ", commentId);
+                    LOG.warn("Comment not found with the commentId - "+ commentId);
                     throw new RecordNotFoundException("Vote Query Failed");
                 }
                 update.set(String.format(COMMENT_USERS_INTERACTED_FIELD, index, username), voteId);

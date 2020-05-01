@@ -3,6 +3,7 @@ package com.rstack.devnet.repository;
 import com.mongodb.client.result.UpdateResult;
 import com.rstack.devnet.dto.mapper.PostMapper;
 import com.rstack.devnet.dto.model.PostDTO;
+import com.rstack.devnet.exception.RecordNotFoundException;
 import com.rstack.devnet.model.Comment;
 import com.rstack.devnet.model.Post;
 import com.rstack.devnet.model.Vote;
@@ -35,6 +36,8 @@ public class PostRepository {
     private static final String COMMENT_FIELD = "commentObj";
     private static final String QUESTION_ID_FIELD = "questionId";
     private static final String ID_FIELD = "id";
+    private static final String NO_OF_ANSWERS = "noOfAnswers";
+
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
@@ -49,9 +52,11 @@ public class PostRepository {
                 post.setId(questionId);
                 post.setQuestionHeader(postRequest.getContentHeader());
                 post.setQuestionBody(postRequest.getContentBody());
+                post.setNoOfAnswers(0);
             } else {
                 post.setId(answerId);
                 post.setAnswerBody(postRequest.getContentBody());
+                incNoOfAnswersOfQue(questionId);
             }
             post.setQuestionId(questionId);
             post.setUsername(username);
@@ -63,10 +68,23 @@ public class PostRepository {
             post.setVote(vote);
             mongoTemplate.insert(post, POST_COLLECTION);
         } catch (Exception e) {
-            LOG.info("Insert post failed, reason - ", e.getMessage());
+            LOG.info("Insert post failed, reason - "+ e.getMessage());
         }
         LOG.info("Post inserted successfully");
         return postMapper.toPostDTO(post);
+    }
+
+    private void incNoOfAnswersOfQue(String questionId) {
+        Update update = new Update();
+        Query query = new Query(where(ID_FIELD).is(questionId));
+        Post question = mongoTemplate.findOne(query, Post.class);
+        if (question == null) {
+            LOG.warn("question not found with the questionId - " + questionId);
+            throw new RecordNotFoundException("Update NoOfAnswers Failed");
+        }
+        update.inc(NO_OF_ANSWERS, 1);
+        mongoTemplate.findAndModify(query, update, Post.class, POST_COLLECTION);
+        LOG.info("NoOfAnswers incremented successfully");
     }
 
     public Comment insertComment(CommentRequest commentRequest, String username, Instant currentTimestamp, String postId, String commentId) {
@@ -91,7 +109,7 @@ public class PostRepository {
             }
             return comment;
         } catch (Exception e) {
-            LOG.info("Insert comment failed, reason - ", e.getMessage());
+            LOG.info("Insert comment failed, reason - "+ e.getMessage());
             return null;
         }
     }
@@ -103,7 +121,7 @@ public class PostRepository {
             query.addCriteria(where(QUESTION_ID_FIELD).is(questionId));
             posts = mongoTemplate.find(query, Post.class, POST_COLLECTION);
         } catch (Exception e) {
-            LOG.info("Get posts failed, reason - ", e.getMessage());
+            LOG.info("Get posts failed, reason - "+ e.getMessage());
         }
         LOG.info("Retrieved posts successfully");
         return postMapper.toPostDTOList(posts);

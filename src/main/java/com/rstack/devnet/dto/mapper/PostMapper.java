@@ -24,6 +24,7 @@ public class PostMapper {
         postDTO.setUsername(post.getUsername());
         postDTO.setPostedAt(post.getPostedAt());
         postDTO.setQuestionId(post.getQuestionId());
+        postDTO.setNoOfAnswers(post.getNoOfAnswers());
         postDTO.setVote(post.getVote());
         postDTO.setUsersInteracted(post.getUsersInteracted());
         postDTO.setComments(post.getComments());
