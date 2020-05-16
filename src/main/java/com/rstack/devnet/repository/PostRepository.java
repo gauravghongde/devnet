@@ -47,8 +47,8 @@ public class PostRepository {
     private static final String NO_OF_ANSWERS_FIELD = "noOfAnswers";
     private static final String IS_EDITED_FIELD = "isEdited";
 
-    private Criteria idQuestionMatchCriteria = Criteria.where(ID_FIELD).regex("^".concat(PostType.QUESTION.getIdPrefix()));
-    private Criteria idAnswerMatchCriteria = Criteria.where(ID_FIELD).regex("^".concat(PostType.ANSWER.getIdPrefix()));
+    private Criteria idQuestionMatchCriteria = where(ID_FIELD).regex("^".concat(PostType.QUESTION.getIdPrefix()));
+    private Criteria idAnswerMatchCriteria = where(ID_FIELD).regex("^".concat(PostType.ANSWER.getIdPrefix()));
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -187,7 +187,7 @@ public class PostRepository {
     }
 
     public List<PostDTO> getAllQuestionsByUsername(String username) {
-        Criteria usernameMatchCriteria = Criteria.where(USERNAME_FIELD).is(username);
+        Criteria usernameMatchCriteria = where(USERNAME_FIELD).is(username);
         Query query = new Query();
         query.addCriteria(new Criteria().andOperator(idQuestionMatchCriteria, usernameMatchCriteria));
         List<Post> questions = mongoTemplate.find(query, Post.class, POST_COLLECTION);
