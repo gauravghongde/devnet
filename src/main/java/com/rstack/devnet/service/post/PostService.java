@@ -8,11 +8,6 @@ import com.rstack.devnet.utility.PostRequest;
 import java.util.List;
 
 public interface PostService {
-    PostDTO addQuestion(PostRequest postRequest, String username);
-    //
-
-    PostDTO addAnswer(PostRequest postRequest, String username, String questionId);
-    //
 
     Comment addComment(CommentRequest commentRequest, String username, String postId);
     //
@@ -23,4 +18,21 @@ public interface PostService {
     PostDTO getQuestion(String questionId, String username);
     //Kept for later purpose
 
+    PostDTO getPostById(String postId);
+
+    List<PostDTO> getAllQuestions(String username);
+
+    List<PostDTO> getAllQuestionsByUsername(String username);
+
+    List<PostDTO> getAllAnswersByUsername(String username);
+
+    PostDTO updatePostById(PostRequest postRequest, String username, String postId);
+
+    PostDTO addPost(PostRequest postRequest, String username, String questionId);
+
+    void deletePostById(String postId, String username);
+
+    void deleteCommentById(String commentId, String postId, String username);
+
+    void updateCommentById(CommentRequest commentRequest, String commentId, String postId, String username);
 }
