@@ -1,7 +1,7 @@
 package com.rstack.devnet.config;
 
 import com.rstack.devnet.security.JwtAuthenticationFilter;
-import com.rstack.devnet.service.MyUserDetailsService;
+import com.rstack.devnet.service.auth.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

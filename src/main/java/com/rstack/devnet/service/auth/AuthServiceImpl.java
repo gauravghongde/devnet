@@ -1,10 +1,8 @@
-package com.rstack.devnet.serviceImpl;
+package com.rstack.devnet.service.auth;
 
-import com.rstack.devnet.model.USER;
+import com.rstack.devnet.model.User;
 import com.rstack.devnet.repository.UserRepository;
 import com.rstack.devnet.security.JwtTokenProvider;
-import com.rstack.devnet.service.IAuthService;
-import com.rstack.devnet.service.MyUserDetailsService;
 import com.rstack.devnet.utility.LoginRequest;
 import com.rstack.devnet.utility.LoginResponse;
 import com.rstack.devnet.utility.RegisterRequest;
@@ -14,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthServiceImpl implements IAuthService {
+public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private UserRepository userRepository;
@@ -28,11 +26,9 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public LoginResponse loginUser(LoginRequest loginRequest) {
-        USER user = userRepository.loginUser(loginRequest);
-
+        User user = userRepository.loginUser(loginRequest);
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
         final String jwt = jwtTokenProvider.createToken(userDetails);
-
         return new LoginResponse(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail(), jwt);
     }
 
@@ -40,10 +36,10 @@ public class AuthServiceImpl implements IAuthService {
     public RegisterResponse registerUser(RegisterRequest registerRequest) {
         RegisterResponse registerResponse;
         boolean isUsernamePresent = userRepository.checkIfUsernameExists(registerRequest.getUsername());
-        boolean isEmailIdPresent = userRepository.checkIfUsernameExists(registerRequest.getEmailId());
+        boolean isEmailIdPresent = userRepository.checkIfUsernameExists(registerRequest.getEmail());
         if (!isUsernamePresent && !isEmailIdPresent) {
             try {
-                USER user = userRepository.registerUser(registerRequest);
+                User user = userRepository.registerUser(registerRequest);
                 registerResponse = new RegisterResponse("SUCCESS!! REGISTRATION DONE", user.getUsername());
             } catch (Exception e) {
                 registerResponse = new RegisterResponse("FAILED IN INSERT", null);
@@ -51,7 +47,7 @@ public class AuthServiceImpl implements IAuthService {
         } else {
             String failResponse = "Cannot register,";
             failResponse = isUsernamePresent ? failResponse + "\n - the Username -> " + registerRequest.getUsername() + " is already present" : failResponse;
-            failResponse = isEmailIdPresent ? failResponse + "\n - the EmailId -> " + registerRequest.getEmailId() + " is already present" : failResponse;
+            failResponse = isEmailIdPresent ? failResponse + "\n - the EmailId -> " + registerRequest.getEmail() + " is already present" : failResponse;
             registerResponse = new RegisterResponse(failResponse, null);
         }
         return registerResponse;

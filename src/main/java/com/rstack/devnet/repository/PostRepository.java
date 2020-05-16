@@ -1,11 +1,16 @@
 package com.rstack.devnet.repository;
 
-import com.rstack.devnet.model.COMMENT;
-import com.rstack.devnet.model.POST;
+import com.mongodb.client.result.UpdateResult;
+import com.rstack.devnet.dto.mapper.PostMapper;
+import com.rstack.devnet.dto.model.PostDTO;
+import com.rstack.devnet.exception.RecordNotFoundException;
+import com.rstack.devnet.model.Comment;
+import com.rstack.devnet.model.Post;
+import com.rstack.devnet.model.Vote;
 import com.rstack.devnet.utility.CommentRequest;
-import com.rstack.devnet.utility.CommentResponse;
 import com.rstack.devnet.utility.PostRequest;
-import com.rstack.devnet.utility.PostResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -17,7 +22,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -27,120 +31,109 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 @Repository
 public class PostRepository {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PostRepository.class);
+    private static final String POST_COLLECTION = "POST";
+    private static final String COMMENT_FIELD = "comments";
+    private static final String QUESTION_ID_FIELD = "questionId";
+    private static final String ID_FIELD = "id";
+    private static final String NO_OF_ANSWERS = "noOfAnswers";
+
     @Autowired
     private MongoTemplate mongoTemplate;
-
     @Autowired
-    private static final String POST_COLLECTION = "POST";
-    private static final int NOVOTE = 0;
-    private static final int DOWNVOTE = 1;
-    private static final int UPVOTE = 2;
+    private PostMapper postMapper;
 
-    public PostResponse insertPost(PostRequest postRequest, String username, Instant currentTimestamp, String questionId, String answerId) {
-        // TODO: Show warning if same user adds answer for same question, suggest for editing present answer
+    public PostDTO insertPost(PostRequest postRequest, String username, Instant currentTimestamp, String questionId, String answerId) {
+        List<Comment> comments = new ArrayList<>();
+        Vote vote = new Vote();
+        Post post = new Post();
         try {
-            List<COMMENT> comments = new ArrayList<>();
-            POST post = new POST();
             if (answerId.isEmpty()) {
-                post.setPostId(questionId);
+                post.setId(questionId);
                 post.setQuestionHeader(postRequest.getContentHeader());
                 post.setQuestionBody(postRequest.getContentBody());
+                post.setNoOfAnswers(0);
             } else {
-                post.setPostId(answerId);
+                post.setId(answerId);
                 post.setAnswerBody(postRequest.getContentBody());
-                post.setForQuestion(questionId);
+                incNoOfAnswersOfQue(questionId);
             }
-            post.setPostedBy(username);
-            post.setCommentObj(comments);
+            post.setQuestionId(questionId);
+            post.setUsername(username);
+            post.setComments(comments);
             post.setUsersInteracted(new HashMap<>());
             post.setPostedAt(currentTimestamp);
-            post.setUpVotes(0);
-            post.setDownVotes(0);
+            vote.setUpVotes(0);
+            vote.setDownVotes(0);
+            post.setVote(vote);
             mongoTemplate.insert(post, POST_COLLECTION);
-            return new PostResponse("Successfully updated!", post);
         } catch (Exception e) {
-            return new PostResponse("Failed to update, Reason: " + e.toString(), null);
+            LOG.info("Insert post failed, reason - "+ e.getMessage());
         }
+        LOG.info("Post inserted successfully");
+        return postMapper.toPostDTO(post);
     }
 
-    public CommentResponse insertComment(CommentRequest commentRequest, String username, Instant currentTimestamp, String postId, String commentId) {
-        COMMENT comment = new COMMENT();
+    private void incNoOfAnswersOfQue(String questionId) {
         Update update = new Update();
-        comment.setCommentBody(commentRequest.getCommentBody());
-        comment.setCommentId(commentId);
-        comment.setByUser(username);
+        Query query = new Query(where(ID_FIELD).is(questionId));
+        Post question = mongoTemplate.findOne(query, Post.class);
+        if (question == null) {
+            LOG.warn("question not found with the questionId - " + questionId);
+            throw new RecordNotFoundException("Update NoOfAnswers Failed");
+        }
+        update.inc(NO_OF_ANSWERS, 1);
+        mongoTemplate.findAndModify(query, update, Post.class, POST_COLLECTION);
+        LOG.info("NoOfAnswers incremented successfully");
+    }
+
+    public Comment insertComment(CommentRequest commentRequest, String username, Instant currentTimestamp, String postId, String commentId) {
+        Comment comment = new Comment();
+        Vote vote = new Vote();
+        Update update = new Update();
+        comment.setBody(commentRequest.getCommentBody());
+        comment.setId(commentId);
+        comment.setUsername(username);
         comment.setPostedAt(currentTimestamp);
-        comment.setUpVotes(0);
-        comment.setDownVotes(0);
+        vote.setUpVotes(0);
+        vote.setDownVotes(0);
+        comment.setVote(vote);
         comment.setUsersInteracted(new HashMap<>());
         Query query = new Query();
-        update.push("commentObj", comment);
+        update.push(COMMENT_FIELD, comment);
         try {
-            query.addCriteria(new Criteria("postId").is(postId));
-            mongoTemplate.updateFirst(query, update, POST.class, POST_COLLECTION);
-            return new CommentResponse("Successfully added comment to Answer!", comment);
-        } catch (Exception e) {
-            return new CommentResponse("Failed to update, Reason: " + e.toString(), null);
-        }
-    }
-
-    public String insertUserVote(String username, int voteId, String postId, String commentId) {
-        int index = -1;
-        Update update = new Update();
-        Query query = new Query(where("postId").is(postId));
-        POST postObj = mongoTemplate.findOne(query, POST.class);
-        try {
-            if (commentId.isEmpty()) {
-                update.set("usersInteracted." + username, voteId);
-
-                int prevVoteId = postObj.getUsersInteracted().getOrDefault(username, 0);
-                if (prevVoteId == NOVOTE) {
-                    if (voteId == UPVOTE) {
-                        update.inc("upVotes", 1);
-                    } else if (voteId == DOWNVOTE) {
-                        update.inc("downVotes", 1);
-                    }
-                } else if (prevVoteId == UPVOTE) {
-                    update.inc("upVotes", -1);
-                    if (voteId == DOWNVOTE) {
-                        update.inc("downVotes", 1);
-                    }
-                } else {
-                    update.inc("downVotes", -1);
-                    if (voteId == UPVOTE) {
-                        update.inc("upVotes", 1);
-                    }
-                }
-            } else {
-                List<COMMENT> cmtList = postObj.getCommentObj();
-                index = IntStream.range(0, cmtList.size())
-                        .filter(i -> commentId.equals(cmtList.get(i).getCommentId()))
-                        .findFirst().getAsInt();
-                update.set("commentObj." + index + ".usersInteracted." + username, voteId);
-
-                int prevVoteId = cmtList.get(index).getUsersInteracted().getOrDefault(username, 0);
-                if (prevVoteId == NOVOTE) {
-                    if (voteId == UPVOTE) {
-                        update.inc("commentObj." + index + ".upVotes", 1);
-                    } else if (voteId == DOWNVOTE) {
-                        update.inc("commentObj." + index + ".downVotes", 1);
-                    }
-                } else if (prevVoteId == UPVOTE) {
-                    update.inc("commentObj." + index + ".upVotes", -1);
-                    if (voteId == DOWNVOTE) {
-                        update.inc("commentObj." + index + ".downVotes", 1);
-                    }
-                } else {
-                    update.inc("commentObj." + index + ".downVotes", -1);
-                    if (voteId == UPVOTE) {
-                        update.inc("commentObj." + index + ".upVotes", 1);
-                    }
-                }
+            query.addCriteria(new Criteria(ID_FIELD).is(postId));
+            UpdateResult result = mongoTemplate.updateFirst(query, update, Post.class, POST_COLLECTION);
+            if (result == null || result.getModifiedCount() == 0) {
+                LOG.info("No comment inserted");
             }
-            mongoTemplate.findAndModify(query, update, POST.class, POST_COLLECTION);
-            return "SUCCESS " + index;
+            return comment;
         } catch (Exception e) {
-            return "FAILURE- ".concat(e.toString());
+            LOG.info("Insert comment failed, reason - "+ e.getMessage());
+            return null;
         }
     }
+
+    public List<PostDTO> getAllPostsByQuestionId(String questionId) {
+        Query query = new Query();
+        List<Post> posts = null;
+        try {
+            query.addCriteria(where(QUESTION_ID_FIELD).is(questionId));
+            posts = mongoTemplate.find(query, Post.class, POST_COLLECTION);
+        } catch (Exception e) {
+            LOG.info("Get posts failed, reason - "+ e.getMessage());
+        }
+        LOG.info("Retrieved posts successfully");
+        return postMapper.toPostDTOList(posts);
+    }
+
+    public PostDTO getQuestionById(String questionId) {
+        Criteria findQuestionByIdCriteria = new Criteria(ID_FIELD).is(questionId);
+        Query query = new Query();
+        query.addCriteria(findQuestionByIdCriteria);
+        Post post = mongoTemplate.findOne(query, Post.class, POST_COLLECTION);
+        return postMapper.toPostDTO(post);
+    }
+
+
 }
