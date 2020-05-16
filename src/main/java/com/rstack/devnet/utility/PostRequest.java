@@ -1,30 +1,40 @@
 package com.rstack.devnet.utility;
 
 public class PostRequest {
-    private String contentHeader;
-    private String contentBody;
+    private String questionHeader;
+    private String questionBody;
+    private String answerBody;
 
     public PostRequest() {
     }
 
-    public PostRequest(String contentHeader, String contentBody) {
-        this.contentHeader = contentHeader;
-        this.contentBody = contentBody;
+    public PostRequest(String questionHeader, String questionBody, String answerBody) {
+        this.questionHeader = questionHeader;
+        this.questionBody = questionBody;
+        this.answerBody = answerBody;
     }
 
-    public String getContentHeader() {
-        return contentHeader;
+    public String getQuestionHeader() {
+        return questionHeader;
     }
 
-    public void setContentHeader(String contentHeader) {
-        this.contentHeader = contentHeader;
+    public void setQuestionHeader(String questionHeader) {
+        this.questionHeader = questionHeader;
     }
 
-    public String getContentBody() {
-        return contentBody;
+    public String getQuestionBody() {
+        return questionBody;
     }
 
-    public void setContentBody(String contentBody) {
-        this.contentBody = contentBody;
+    public void setQuestionBody(String questionBody) {
+        this.questionBody = questionBody;
+    }
+
+    public String getAnswerBody() {
+        return answerBody;
+    }
+
+    public void setAnswerBody(String answerBody) {
+        this.answerBody = answerBody;
     }
 }

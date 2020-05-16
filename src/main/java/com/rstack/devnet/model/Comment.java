@@ -8,6 +8,7 @@ public class Comment {
     private String body;
     private String username;
     private Instant postedAt;
+    //    private Boolean isEdited;
     private Vote vote;
     private HashMap<String,Integer> usersInteracted;
 

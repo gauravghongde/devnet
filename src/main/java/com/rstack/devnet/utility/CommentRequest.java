@@ -1,20 +1,23 @@
 package com.rstack.devnet.utility;
 
+import javax.validation.constraints.NotNull;
+
 public class CommentRequest {
-    private String commentBody;
+    @NotNull
+    private String body;
 
     public CommentRequest() {
     }
 
-    public CommentRequest(String commentBody) {
-        this.commentBody = commentBody;
+    public CommentRequest(String body) {
+        this.body = body;
     }
 
-    public String getCommentBody() {
-        return commentBody;
+    public String getBody() {
+        return body;
     }
 
-    public void setCommentBody(String commentBody) {
-        this.commentBody = commentBody;
+    public void setBody(String body) {
+        this.body = body;
     }
 }
