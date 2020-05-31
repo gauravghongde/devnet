@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -74,7 +75,7 @@ public class PostServiceImpl implements PostService {
         // TODO: check below code necessary or not
         vote.setVoteStatus(post.getUsersInteracted().getOrDefault(username, 0));
         post.setVote(vote);
-        post.getComments().stream().forEach(comment -> {
+        post.getComments().forEach(comment -> {
             Vote commentVote = new Vote();
             commentVote.setVoteStatus(comment.getUsersInteracted().getOrDefault(username, 0));
             comment.setVote(commentVote);
@@ -121,12 +122,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deleteCommentById(String commentId, String postId, String username) {
-        List<Comment> updatedCommentList = getPostById(postId).getComments();
-        for (Comment comment : updatedCommentList) {
-            if (comment.getId().equals(commentId)) {
-                updatedCommentList.remove(comment);
+        List<Comment> oldCommentList = getPostById(postId).getComments();
+        List<Comment> newCommentList = new ArrayList<>();
+        for (Comment comment : oldCommentList) {
+            if (!comment.getId().equals(commentId)) {
+                newCommentList.add(comment);
             }
         }
-        postRepository.updateCommentById(updatedCommentList, postId);
+        postRepository.updateCommentById(newCommentList, postId);
     }
 }
