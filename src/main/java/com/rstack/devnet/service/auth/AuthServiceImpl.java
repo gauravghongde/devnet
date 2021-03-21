@@ -3,12 +3,13 @@ package com.rstack.devnet.service.auth;
 import com.rstack.devnet.model.User;
 import com.rstack.devnet.repository.UserRepository;
 import com.rstack.devnet.security.JwtTokenProvider;
+import com.rstack.devnet.security.UserPrincipal;
 import com.rstack.devnet.utility.LoginRequest;
 import com.rstack.devnet.utility.LoginResponse;
 import com.rstack.devnet.utility.RegisterRequest;
 import com.rstack.devnet.utility.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,11 +26,10 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public LoginResponse loginUser(LoginRequest loginRequest) {
-        User user = userRepository.loginUser(loginRequest);
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
-        final String jwt = jwtTokenProvider.createToken(userDetails);
-        return new LoginResponse(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail(), jwt);
+    public LoginResponse loginUser(LoginRequest loginRequest, Authentication authentication) {
+        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
+        String token = jwtTokenProvider.createToken(user);
+        return new LoginResponse(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail(), token);
     }
 
     @Override
